@@ -8,70 +8,97 @@
       canvas {
         border: 1px solid #000;
       }
+      .bar-heading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .bar-heading h1{
+        margin-right: 1rem;
+      }
+      .refreshButton {
+        border: none;
+        font-weight: 600;
+        font-size: 1.2rem;
+        border-radius: 4px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
-    <h1>Bar Graph Example (Bubble Sort)</h1>
+    <div class="bar-heading">
+      <h1>Bar Graph Example (Bubble Sort)</h1>
+      <button id="refresh" class="refreshButton">🔃</button>
+    </div>
     <canvas id="barChart" width="800" height="400"></canvas>
 
     <script>
       // Get canvas context
       const canvas = document.getElementById("barChart");
+      const refresh = document.getElementById("refresh");
       const ctx = canvas.getContext("2d");
+      bubbleSort();
 
-      // Chart properties
-      const barWidth = 50;
-      const barGap = 15;
-      const chartHeight = 300;
+      function bubbleSort() {
+        // Chart properties
+        const barWidth = 50;
+        const barGap = 15;
+        const chartHeight = 300;
 
-      // Function to draw bars
-      function drawBar(x, y, width, height, color) {
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, width, height);
-      }
+        // Function to draw bars
+        function drawBar(x, y, width, height, color) {
+          ctx.fillStyle = color;
+          ctx.fillRect(x, y, width, height);
+        }
 
-      // Loop to draw each bar
-      // Sample data for the bar graph
-      const data = [];
-      let iterations = Math.floor(Math.random() * 10) + 3;
-      for (let i = 0; i < iterations; i++) {
-        const el = Math.floor(Math.random() * 100) + 3;
-        data.push(el);
-      }
+        // Loop to draw each bar
+        // Sample data for the bar graph
+        const data = [];
+        let iterations = Math.floor(Math.random() * 10) + 3;
+        for (let i = 0; i < iterations; i++) {
+          const el = Math.floor(Math.random() * 100) + 3;
+          data.push(el);
+        }
 
-      for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < data.length; j++) {
-          if (data[i] < data[j]) {
-            let temp = data[i];
-            data[i] = data[j];
-            data[j] = temp;
+        for (let i = 0; i < data.length; i++) {
+          for (let j = 0; j < data.length; j++) {
+            if (data[i] < data[j]) {
+              let temp = data[i];
+              data[i] = data[j];
+              data[j] = temp;
+            }
           }
         }
+        for (let i = 0; i < data.length; i++) {
+          const x = i * (barWidth + barGap) + 50; // Adjusting x position
+          const barHeight = data[i] * 3; // Scaling factor for height
+          const y = chartHeight - barHeight + 50; // Adjusting y position
+
+          // Draw the bar
+          drawBar(x, y, barWidth, barHeight, "#3498db");
+
+          // Label the bars
+          ctx.fillStyle = "#000";
+          ctx.font = "14px Arial";
+          ctx.fillText(data[i], x + 10, chartHeight + 70); // Labeling below bars\
+        }
+        // Drawing Y-axis
+        ctx.beginPath();
+        ctx.moveTo(50, 50);
+        ctx.lineTo(50, chartHeight + 50);
+        ctx.stroke();
+
+        // Drawing X-axis
+        ctx.beginPath();
+        ctx.moveTo(50, chartHeight + 50);
+        ctx.lineTo(70 * data.length, chartHeight + 50);
+        ctx.stroke();
       }
-      for (let i = 0; i < data.length; i++) {
-        const x = i * (barWidth + barGap) + 50; // Adjusting x position
-        const barHeight = data[i] * 3; // Scaling factor for height
-        const y = chartHeight - barHeight + 50; // Adjusting y position
 
-        // Draw the bar
-        drawBar(x, y, barWidth, barHeight, "#3498db");
-
-        // Label the bars
-        ctx.fillStyle = "#000";
-        ctx.font = "14px Arial";
-        ctx.fillText(data[i], x + 10, chartHeight + 70); // Labeling below bars\
-      }
-      // Drawing Y-axis
-      ctx.beginPath();
-      ctx.moveTo(50, 50);
-      ctx.lineTo(50, chartHeight + 50);
-      ctx.stroke();
-
-      // Drawing X-axis
-      ctx.beginPath();
-      ctx.moveTo(50, chartHeight + 50);
-      ctx.lineTo(70 * data.length, chartHeight + 50);
-      ctx.stroke();
+      refresh.addEventListener("click", function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        bubbleSort();
+      });
     </script>
   </body>
 </html>
